@@ -1,0 +1,45 @@
+<input type="number"
+	placeholder="Charge"
+	[(ngModel)]="rateInput"
+	name="rateInput"
+	pattern="^$|^([0-9]|[1-9][0-9]|[1][0][0])?"
+	required
+	#rateInput2 = "ngModel">
+
+<input type="number"
+    maxlength="3"
+    min="0"
+    max="100"
+    required
+    mdInput
+    placeholder="Charge"
+    [(ngModel)]="rateInput"
+    name="rateInput">
+
+    <!-- angular1 tootips -->
+<div tooltip-html="tooltipText"
+	tooltip-enable="tooltipEnable" tooltip-placement="top" tooltip-trigger="mouseover" id="model.$$validation.name.tooltip"
+	class="ng-scope">
+	<input ag-mandatory="{bracketStyle:true}"
+		class="form-control ng-valid ng-scope ng-dirty ng-valid-parse ng-touched has-warning"
+		id="systemName" ng-model="model['name']" type="text">
+</div>
+
+<ngb-tooltip-window role="tooltip" _nghost-c0=""
+	class="tooltip show bs-tooltip-top"
+	id="ngb-tooltip-0" style="top: -24px; left: 241px;">
+	<div _ngcontent-c0="" class="arrow"></div>
+	<div _ngcontent-c0="" class="tooltip-inner">true</div>
+</ngb-tooltip-window>
+
+<!-- angular1 tootip html -->
+<div class="tooltip ng-isolate-scope top fade in"
+	tooltip-animation-class="fade"
+	tooltip-classes="" ng-class="{ in: isOpen() }"
+	tooltip-html-popup="" title="" content-exp="contentExp()"
+	placement="top" popup-class="" animation="animation" is-open="isOpen" origin-scope="origScope"
+	style="display: block; top: -26px; left: 94.5469px; width: 162px; height: 26px;">
+  <div class="tooltip-arrow"></div>
+  <div class="tooltip-inner ng-binding" ng-bind-html="contentExp()">
+	<div class="error-text-inline">以下字段为必填字段：名称</div></div>
+</div>
