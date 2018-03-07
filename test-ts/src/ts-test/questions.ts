@@ -1,5 +1,8 @@
-/* es6 doesn't work in ts */
 
-  new Map(
-  ['detail/duplicate/:id','']
-)
+/* string enum reverse mapping */
+type Mode = "Silent" | "Normal" | "Deleted";
+const mode = {
+    get Silent(): Mode { return "Silent"; },
+    get Normal(): Mode { return "Normal"; },
+    get Deleted(): Mode { return "Deleted"; }
+}

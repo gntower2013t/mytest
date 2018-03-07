@@ -82,7 +82,6 @@ function f3(obj: { X: number }) {
 	return obj.X;
 }
 
-
 // Works, since 'E' has a property named 'X' which is a number.
 f3(E);
 
