@@ -68,6 +68,7 @@ let h = new Handler();
 let uiElement: UIElement; uiElement.addClickListener(h.onClickBad); // error!
 
 
+/* overload */
 let suits = ["hearts", "spades", "clubs", "diamonds"];
 
 function pickCard(x: { suit: string; card: number; }[]): number;
@@ -93,7 +94,8 @@ alert("card: " + pickedCard1.card + " of " + pickedCard1.suit);
 let pickedCard2 = pickCard(15);
 alert("card: " + pickedCard2.card + " of " + pickedCard2.suit);
 
-//alternative: union type
+
+/* alternative: union type */
 type ToPick = { suit: string; card: number; } | number ;
 function pick2(x: ToPick) {
 	let r = x.suit; //error
@@ -105,3 +107,29 @@ function pick2(x: ToPick) {
 	}
 }
 
+/* constructor overload
+  https://stackoverflow.com/questions/12702548/constructor-overload-in-typescript
+  Alternatively, you'd better use static factory methods.
+*/
+interface IBox {
+	x: number;
+	y: number;
+	height: number;
+	width: number;
+}
+
+class Box {
+	public x: number;
+	public y: number;
+	public height: number;
+	public width: number;
+
+	constructor();
+	constructor(obj: IBox);
+	constructor(obj?: any) {
+		this.x = obj && obj.x || 0
+		this.y = obj && obj.y || 0
+		this.height = obj && obj.height || 0
+		this.width = obj && obj.width || 0;
+	}
+}
