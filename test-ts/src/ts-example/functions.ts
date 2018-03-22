@@ -133,3 +133,14 @@ class Box {
 		this.width = obj && obj.width || 0;
 	}
 }
+
+
+/* destructure in function args */
+interface Data{
+	x: number;
+	y: string
+}
+
+function my2({ x, y }: Data, z: number) {
+
+}

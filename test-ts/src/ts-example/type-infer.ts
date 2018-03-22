@@ -1,5 +1,3 @@
-let zoo = [new Rhino(), new Animal(""), null, new Snake("")];
-
 export class Animal {
 	name: string;
 	constructor(theName: string) { this.name = theName; }
@@ -14,6 +12,8 @@ class Rhino extends Animal {
 	rhino: string;
 	constructor() { super("Rhino"); }
 }
+
+let zoo = [new Rhino(), new Animal(""), null, new Snake("")];
 
 window.onmousedown = function (mouseEvent) {
 	console.log(mouseEvent.button);  //ok

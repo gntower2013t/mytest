@@ -1,4 +1,6 @@
-let map = new Map<string,number>(
+export class A{}
+
+let map = new Map<string, number>(
   // ['detail/duplicate/:id',''] //es6, doesn't work in ts
 )
 
