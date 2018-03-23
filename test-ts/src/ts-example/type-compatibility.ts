@@ -30,8 +30,8 @@ let x = (a: number) => 0;
 let y = (b: number, s: string) => 0;
 
 // OK, as ignoring extra function parameters is actually quite common in JavaScript
-y = x;
-x = y; // Error, x has less params
+y = x;  //ok, x has less params
+x = y; // Error, y has more params
 }
 
 let items = [1, 2, 3];
@@ -131,8 +131,8 @@ class A{
 class B{
 	name: string;
 }
-let a: A; let b: B;
-a = b;
+let a: A; let b: B=new B();
+a = b; //ok
 
 
 { /* Generics */

@@ -105,7 +105,7 @@ f(1, undefined);
 f(1, null); // error, 'null' is not assignable to 'number | undefined'
 
 /* type guard for null, x == null */
-function f(sn: string | null): string {
+function f2(sn: string | null): string {
 	if (sn == null) {
 			return "default";
 	}
@@ -114,7 +114,9 @@ function f(sn: string | null): string {
 	}
 }
 
-function f(sn: string | null): string {
+f2(undefined); // undefined can't be assigned to null
+
+function f3(sn: string | null): string {
 	return sn || "default"; //also works!!
 }
 
@@ -139,6 +141,7 @@ function fixed(name: string | null): string {
 	return postfix("great");
 }
 
+//collection![index]; this form is also legal
 
 /* Type alias */
 type Name = string;
@@ -216,7 +219,10 @@ function foo(x: number) {
 	}
 }
 
-/* Discriminated Unions */
+/* Discriminated Unions
+	aka. tagged unions or algebraic data types
+	Note: for class, the prop must be readonly
+*/
 interface Square {
 	kind: "square"; //discriminant
 	size: number;
