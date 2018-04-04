@@ -27,6 +27,9 @@ filter(s => s.routeConfig.path === segment) // ActivatedRouteSnapshot?
 router.events.filter(evt => evt instanceof NavigationEnd)
 	.withLatestFrom(store.select('app', 'search'))
 
+withLatestFrom(
+	this.store.select(fromRoot.getRouterState),
+
 //ng router
 RouterStateSnapshot
 class RoutesRecognized extends RouterEvent

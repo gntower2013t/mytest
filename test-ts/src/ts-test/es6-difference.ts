@@ -1,7 +1,7 @@
-export class A{}
+export class A { }
 
 let map = new Map<string, number>(
-  // ['detail/duplicate/:id',''] //es6, doesn't work in ts
+	// ['detail/duplicate/:id',''] //es6, doesn't work in ts
 )
 
 /* iterate typescript Map
@@ -20,3 +20,18 @@ map.forEach((v, k, map) => { })
 
 // map to array, make map iterable
 Array.from(map)
+
+
+/* iterate indexable type */
+let myDictionary: { [index: string]: any; } = {};
+
+for (let key in myDictionary) { }
+// not safe, need to check hasOwnProperty,  if (myDictionary.hasOwnProperty(key))
+// as there are too many libraries which do modify object prototypes
+
+Object.keys(obj).forEach(key => { }) // <ES2017
+
+Object.entries(obj).forEach(  // >=ES2017
+	([key, value]) => console.log(key, value));
+
+for (let [key, value] of Object.entries(obj)) { }
