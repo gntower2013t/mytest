@@ -18,3 +18,8 @@ export function type<T extends string>(label: T): T {
 
 	return <T>label;
 }
+
+export class ActionTypes {
+  static readonly OPEN = type('[Details] Open');
+  static readonly LOAD = type('[Details] Load');
+}

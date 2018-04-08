@@ -9,3 +9,8 @@ const [oriErr={}] = [control.errors]; //null handling
 
 JSON.stringify(obj) // |json jsonpipe
 
+
+/* Function type */
+type a = Function;
+let x: a = () => { }
+x();

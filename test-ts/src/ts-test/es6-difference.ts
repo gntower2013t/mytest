@@ -1,3 +1,5 @@
+import { UV_UDP_REUSEADDR } from "constants";
+
 export class A { }
 
 let map = new Map<string, number>(
@@ -35,3 +37,13 @@ Object.entries(obj).forEach(  // >=ES2017
 	([key, value]) => console.log(key, value));
 
 for (let [key, value] of Object.entries(obj)) { }
+
+
+/* union array types */
+type uu = string[] | number[]
+let arr: uu=[];
+
+[...arr].forEach(e =>) //ok, in this form
+
+//Cannot invoke an expression whose type lacks a call signature
+arr.forEach((e: any) => { }) //error, can't determine arr type
