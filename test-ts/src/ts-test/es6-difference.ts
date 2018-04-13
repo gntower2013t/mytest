@@ -2,9 +2,9 @@ import { UV_UDP_REUSEADDR } from "constants";
 
 export class A { }
 
-let map = new Map<string, number>(
-	// ['detail/duplicate/:id',''] //es6, doesn't work in ts
-)
+let map = new Map<string, number>([
+	['detail/duplicate/:id',2]
+])
 
 /* iterate typescript Map
 	https://stackoverflow.com/questions/37699320/iterating-over-typescript-map
