@@ -1,3 +1,5 @@
+import { APP_INITIALIZER } from "@angular/core";
+
 let heroServiceFactory = (logger: Logger, userService: UserService) => {
 	return new HeroService(logger, userService.user.isAuthorized);
 };

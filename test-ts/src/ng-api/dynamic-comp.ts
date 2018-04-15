@@ -1,3 +1,5 @@
+import { Type, OnInit, OnDestroy, ComponentFactoryResolver } from '@angular/core';
+
 
 export class AdBannerComponent implements OnInit, OnDestroy {
 
@@ -25,8 +27,6 @@ export interface AdComponent {
 
 export class HeroJobAdComponent implements AdComponent { }
 
-
-import { Type } from '@angular/core';
 
 export class AdItem {
 	constructor(public component: Type<any>, public data: any) { }
