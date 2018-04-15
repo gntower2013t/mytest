@@ -1,4 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/operator/map';
+
 
 @Component({
   selector: 'app-root',
@@ -7,4 +11,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'app';
+
+  ob$: Observable<any>;
+
+  constructor(private el: ElementRef) {
+    this.ob$ = Observable.fromEvent(el.nativeElement, 'click')
+      .map((e:MouseEvent)=> e.clientX);
+    this.ob$.subscribe(x=>console.log("click " + x))
+  }
 }
