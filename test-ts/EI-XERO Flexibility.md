@@ -1,19 +1,16 @@
 # EI-XERO Flexibility
 
-This page describes the basic architeture of EI-XERO and how to achieve configurability and flexibility.
+This page describes designs to achieve configurability of EI-XERO and also the essential architeture related to the design.
 
-## State management
->  @ngrx is RxJS powered state management for Angular applications, inspired by Redux
 
-With ngrx, state is well managed:
-* Centralized, immutable State as single source of truth, which can be accessed anywhere.
-* Router as source of truth, meaning url represents states.
-* UI components reflect state change via RxJS and selector.
-* Change is predicable via action & reducer.
+## Architeture features
 
-![redux](./redux.png)
+* State management
+	* Centralized, immutable State as single source of truth, which can be accessed anywhere.
+  * Router as source of truth, meaning url represents states.
+  * UI components reflect state change via RxJS and selector.
+  * Changes are predicable via action & reducer.
 
-## Important features in Angular
 * Feature Module  
   Angular encourages to organize a cohesive set of functionality as a feature module. Separates of concern also helps development cooperation on big projects.
 
@@ -35,36 +32,159 @@ With ngrx, state is well managed:
 
 ## Configuration
 
-* Configuration can loaded via ConfigService and cached in store  
-//TODO **picture here**  searchConfig.getFilters -> store or http request
+* Configuration is loaded via service and cached in store  
+//TODO **picture here**  
+```typescript
+  providers: [
+    {provide: CONFIG_NAME_SPACE, useValue: "search-config"},
+    SearchConfigService,
+  ],
+export class SearchModule { }
+```
+Note: *lazy loaded module has its own injector, so that different config can be provided by the injector, in other word, lazy loaded module is a sandbox for services.*
 
-* Load config when bootstrap  
-If some config is needed when application is initializing, it can be loaded via:
+* Loading config when bootstrap  
+It's easy to hook application initialization, if some config is needed when bootstrap:
 ```typescript
 providers:[{ provide: APP_INITIALIZER, 
       useFactory: initConfig,
       deps: [ConfigService], multi: true }]
 ```
 
-## Search Component & Configuration
+## Search & Configuration
 
 ### Search service
+
 ISearchService is the *class-interface* that defines method *getSearchResults* which uses filters  to assemble query, issues requests to backend and finally resolves returned data to client model.
+```typescript
+getSearchResults: (sf: SearchType, filters: SearchFilters)=> Observable<SearchResult[]>;
+```
 
-Given different contexts (e.g. different route config), different implementation of ISearchService could be provided via Angular DI system. For example, for IDC backend, implementation could be total different.
+As mentioned above, different lazy loaded modules can have different implementation of ISearchService.
+```typescript
+...
+{ provide: ISearchService, useClass: SearchServiceMock }
+...
+export class SearchModule { }
 
-Instead of providing in module level, providers should be defined in metadata of *SearchComponent* so that sepecific service implementation of service can be injected when SearchComponent is creating (typically triggered by router).
+
+//another lazy loaded module, e.g. for IDC
+...
+{ provide: ISearchService, useClass: SearchServiceIDC }
+...
+export class SearchIDCModule { }
+```
+
+To load different module, different route config should be defined.
+```typescript
+Routes = [
+  { path: 'search', loadChildren: 'app/search/search.module#SearchModule' },
+	
+	//route for IDC
+  { path: 'search/idc', loadChildren: 'app/search-idc/search-idc.module#SearchIDCModule'},
+...
+
+export class AppRoutingModule { }
+```
 
 
 ### Filters
-* components
-* display filters accroding to config
-* how to add a new type of filter
+Filter fields need to be dynamically displayed on the page according to the config. We achieve this by using [Dynamic Component Loader](https://angular.io/guide/dynamic-component-loader).
+
+Building blocks:
+* SearchConfigService to load config  
+**search-config.json**
+```json
+"advanced-filters":[{
+  "param": "prcd",
+  "displayName": "Scheduled procedure date"
+	//default type of component is TextInputFilterComponent
+},
+{
+  "param": "arr",
+  "displayName": "patient arrived",
+  "type": "checkbox" //type of component
+}]
+```
+* FilterHostDirective creates dynamic component based on configuration  
+**Usage in template**
+```html
+<div *ngFor="let filter of (filters$ | async); let i = index">
+  <ng-template [eiFilterHost]="filter"></ng-template>
+</div>
+```
+* Different component class has different views
+  * BaseFilterComponent the base class, input property "`@Input() filter`" will bind the filter configuration to view.
+  * TextInputFilterComponent the default type of filter.
+	* CheckboxFilterComponent
+
+* Register components in modules  
+To introduce a new type of filter component, you must register it in `filters` map which provided by module. Also filter components must be indicated as `entryComponents`, see [Dynamic Component Loader](https://angular.io/guide/dynamic-component-loader)
+```typescript
+const comps: FilterTypeMap = {
+  text: TextfilterComponent,
+  checkbox: CheckboxFilterComponent  //key "checkbox" will be referenced in config
+};
+export const filters: ValueProvider = { provide: FILTER_MAP, useValue: comps, multi:true };
+
+...
+
+  providers: [filters],  //the map
+  entryComponents: [TextfilterComponent, CheckboxFilterComponent]
+export class FilterModule { }
+```
 
 ### Table columns
-* components
-* value resovler
-* configurable
+Displaying columns by config uses similar mechanism to filters. Building blocks:  
+* SearchConfigService  
+**Same set of config**
+```json
+"columns": [
+{
+  "head": "Patient",
+  "props": [
+    "patientName"
+  ]
+},
+{
+  "head": "Gender",
+  "type": "genderIcon" //component type
+},
+{
+  "head": "Name",
+  "adapter": "namePrefix"  //value adapter
+}]
+```
+* ColumnHostDirective
+```html
+<ng-container *ngFor="let col of columns$ | async">
+  <td>
+    <ng-container [eiColumnHost]="col" [result]="result"></ng-container>
+  </td>
+</ng-container>
+```
+
+* Components
+  * BaseColumnComponent, render as plain text
+  ```typescript
+  @Input() result: SearchResult;  //data in current row
+  @Input() valueAdapter: (r: SearchResult) => any;  //data transformer, configurable
+  ```
+  * PatientGenderComponent, display gender icon
+
+* Value adapters  
+  Adapters are just pure functions that tranform data to display value, which let column components more reusable. In addition, you can compose functions to satisfy complex requirements.
+  ```typescript
+  (r: SearchResult) => any //value adapter function
+
+  //or function factory that returns value adapter function
+  (args:any[]) => (r: SearchResult) => any
+  ```
+  * propResolver(props: string[]) , most common adapter factory. For convenience, you just need to specify `"props": ["foo", "bar"]` in configuration.
+
+* Registering components is similar to filters
+
+### Make Extension
 
 ## Integrate with external source
 
