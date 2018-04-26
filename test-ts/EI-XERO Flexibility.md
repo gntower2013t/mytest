@@ -53,6 +53,26 @@ providers:[{ provide: APP_INITIALIZER,
 
 ## Search & Configuration
 
+### Config model
+```typescript
+interface Config {
+  simpleFilters: Filter[]
+  advancedFilters: Filter[]
+  columns:  Column[]
+}
+interface Column {
+  head: string;
+  valueAdapter?: Adatper;
+  type: Type<BaseColumnComponent>
+}
+interface Filter {
+  param: string;
+  displayName: string;
+  value?: any;
+  type?: string
+}
+```
+
 ### Search service
 
 ISearchService is the *class-interface* that defines method *getSearchResults* which uses filters  to assemble query, issues requests to backend and finally resolves returned data to client model.
@@ -95,7 +115,7 @@ Building blocks:
 * SearchConfigService to load config  
 **search-config.json**
 ```json
-"advanced-filters":[{
+"advancedFilters":[{
   "param": "prcd",
   "displayName": "Scheduled procedure date"
 	//default type of component is TextInputFilterComponent
@@ -184,10 +204,34 @@ Displaying columns by config uses similar mechanism to filters. Building blocks:
 
 * Registering components is similar to filters
 
-### Make Extension
+### Making Extension
+Lazy loaded module can not only provide replacement of service, but aslo easily extend filters & columns config for dedicated use. For example, `SearchIDCModule` has additional types of filters only used when query against IDC backend.
+
+The extensions are bundled as a separated lazy loaded module, so bundle size of the original `SearchModule` won't be increased.
+
+```typescript
+const comps: FilterTypeMap = {
+  xero: XeroFilterComponent  //dedicated filter for IDC search
+};
+
+//register in another FILTER_MAP
+export const filters: ValueProvider = { provide: FILTER_MAP, useValue: comps, multi: true };
+
+  providers: [
+    filters,
+    { provide: CONFIG_NAME, useValue: "search-idc-config" }, //config for IDC search filters & columns
+    SearchConfigService,],
+
+  entryComponents:[XeroFilterComponent]
+})
+export class SearchIDCModule { }
+```
 
 ## Integrate with external source
+Some options:
+  * external contents in iframe, loose coupled, communicated via message. Not easy to share state and complex interaction.
+  * external contents wrapped as angular component / module. More coupled and fine-grained control, however, it needs more work and sometimes even impossible to do so.
+  * exteranl static content (html). Works in angular.
+  * DOM out of angular context. Communicated via global object?
 
 
-## References
-* dynamic components
