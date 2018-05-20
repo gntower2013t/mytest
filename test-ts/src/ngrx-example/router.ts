@@ -29,7 +29,3 @@ router.events.filter(evt => evt instanceof NavigationEnd)
 
 withLatestFrom(
 	this.store.select(fromRoot.getRouterState),
-
-//ng router
-RouterStateSnapshot
-class RoutesRecognized extends RouterEvent

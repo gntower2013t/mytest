@@ -35,3 +35,14 @@ selectTotal.release() //memoized value is null now.
 /* Selector with the Store, select(fn) */
 store.pipe(select(fromRoot.selectFeatureCount))  //5.0
 store.selet(fn) //before 5.0
+
+
+/* selector wrapped with rxjs pipe */
+export function filterList<T>(selector:  (list: AppState)=> T ) {
+  return pipe(
+    filter((state: AppState) => !!state.list),
+    map(selector)
+  );
+}
+
+this.activeTaskList$ = store.pipe(filterList(listSelectors.activeTaskList));
